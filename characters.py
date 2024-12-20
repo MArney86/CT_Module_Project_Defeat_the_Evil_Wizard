@@ -83,6 +83,25 @@ class EvilWizard(Character):
     def __init__(self, name):
         super().__init__(name, health=150, attack_power=15, attack_name="Evil Magic", evasion="Devils' Sheild", sp_attack="Dark Lightning")
 
+    def attack(self, opponent):
+        try:
+            attack_decision = randint(1,4)
+            if attack_decision == 1:
+                super().attack(opponent)
+            elif attack_decision == 2:
+                self.evade_attack()
+            elif attack_decision == 3:
+                self.special_attack(opponent)
+            elif attack_decision == 4 and self.health <= 100:
+                self.heal()
+            elif attack_decision == 4 and self.health > 100:
+                super().attack(opponent)
+            else:
+                raise ValueError("RNG error value not in acceptable range")
+        except ValueError as ve:
+            print(f"an error has occured: {ve}")
+        
+
     def regenerate(self):
         if self.health < self._max_health - 5:
             self.health += 5
