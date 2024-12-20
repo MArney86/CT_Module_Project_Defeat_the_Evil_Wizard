@@ -6,9 +6,9 @@ class Character:
         self.name = name
         self.health = health
         self.__attack_power = attack_power
-        self.__max_health = health
+        self._max_health = health
         self._attack_name = attack_name #name of character's basic attack
-        self.__abilities = {"evasion" : evasion, #characters' evasion special skill
+        self._abilities = {"evasion" : evasion, #characters' evasion special skill
                            "attack" : sp_attack} #characters' special attack
         self.__evasion = False #flag for evasion skill
 
@@ -16,17 +16,17 @@ class Character:
         opponent.damage(self.calculate_attack_damage(), self._attack_name, self)
         
     def heal(self):
-        if self.health + 20 < self.__max_health:
+        if self.health + 20 < self._max_health:
             self.health += 20
         else:
-            self.health = self.__max_health
+            self.health = self._max_health
 
         print(f"\n{self.name} healed themself. Current health: {self.health}")
 
     #making taking damage part of the character itself to help implement evasion
     def damage(self, hit_damage, attack_name, opponent):
         if self.__evasion:
-            print(f"\n{opponent.name} attacked {self.name} with {attack_name}. {self.name} evaded the attack using their {self.__abilities["evasion"]} ability!")
+            print(f"\n{opponent.name} attacked {self.name} with {attack_name}. {self.name} evaded the attack using their {self._abilities["evasion"]} ability!")
             self.display_stats()
             self.__evasion = False
         else:
@@ -37,20 +37,20 @@ class Character:
     #function to enable the evasion special ability
     def evade_attack(self):
         self.__evasion = True
-        print(f"\n{self.name} has used their {self.__abilities["evasion"]} ability")
+        print(f"\n{self.name} has used their {self._abilities["evasion"]} ability")
 
     #special attack function for characters
     def special_attack(self, opponent):
-        print(f"\n{self.name} has used their {self.__abilities["attack"]} attack !!!")
+        print(f"\n{self.name} has used their {self._abilities["attack"]} attack !!!")
         #randomize extra damage from the special attack and add it to the base attack power
-        opponent.damage(self.__attack_power + randint(10, 20), self.__abilities["attack"], self)
+        opponent.damage(self.__attack_power + randint(10, 20), self._abilities["attack"], self)
 
     #function to access the character's special abilities
     def use_abilities(self, opponent):
         while True:
             print("\n--- Special Abilities ---")
-            print(f"1. Evade the next attack with your {self.__abilities["evasion"]} ability")
-            print(f"2. Use your {self.__abilities["attack"]} special attack")
+            print(f"1. Evade the next attack with your {self._abilities["evasion"]} ability")
+            print(f"2. Use your {self._abilities["attack"]} special attack")
             choice = input("Please input the number of your choice: ")
             if choice == "1":
                 self.evade_attack()
@@ -62,7 +62,7 @@ class Character:
                 print("That was an incorrect choice. Please try again")
 
     def display_stats(self):
-        print(f"{self.name}'s Stats - Health: {self.health if self.health > 0 else 0}/{self.__max_health}, Attack Power: {self.__attack_power}\n")
+        print(f"{self.name}'s Stats - Health: {self.health if self.health > 0 else 0}/{self._max_health}, Attack Power: {self.__attack_power}\n")
 
     #function to quickly calculate randomized attack damage within a standardized range based on character attack power
     def calculate_attack_damage(self): 
@@ -84,7 +84,10 @@ class EvilWizard(Character):
         super().__init__(name, health=150, attack_power=15, attack_name="Evil Magic", evasion="Devils' Sheild", sp_attack="Dark Lightning")
 
     def regenerate(self):
-        self.health += 5
+        if self.health < self._max_health - 5:
+            self.health += 5
+        else:
+            self.health = self._max_health
         print(f"{self.name} regenerates 5 health! Current health: {self.health}")
 
 # Archer class (inherits from Character)
