@@ -34,8 +34,10 @@ def battle(player, wizard):
 
         if choice == '1':
             player.attack(wizard)
+        #added use_abilities functionality for special abilities
         elif choice == '2':
             player.use_abilities(wizard)
+        #added heal functionality
         elif choice == '3':
             player.heal()
         elif choice == '4':
