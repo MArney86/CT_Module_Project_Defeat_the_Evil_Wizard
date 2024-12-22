@@ -78,10 +78,19 @@ class Mage(Character):
     def __init__(self, name):
         super().__init__(name, health=100, attack_power=35, attack_name="Attack Magic", evasion="Barrier", sp_attack="Fireball")
 
+#EvilWizard's Minions class (inherits from Character)
+class Minion(Character):
+    def __init__(self, name, health, attack_power, attack_name, evasion, sp_attack):
+        super().__init__(name, health, attack_power, attack_name, evasion, sp_attack)
+
+    
+
+
+
 # EvilWizard class (inherits from Character)
 class EvilWizard(Character):
     def __init__(self, name):
-        super().__init__(name, health=150, attack_power=15, attack_name="Evil Magic", evasion="Devils' Sheild", sp_attack="Dark Lightning")
+        super().__init__(name, health=150, attack_power=15, attack_name="Evil Magic", evasion="Devils' Sheild", sp_attack="Undead Minions")
 
     def attack(self, opponent):
         try:
@@ -97,9 +106,34 @@ class EvilWizard(Character):
             elif attack_decision == 4 and self.health > 100:
                 super().attack(opponent)
             else:
-                raise ValueError("RNG error value not in acceptable range")
+                raise ValueError("RNG value not in acceptable range")
         except ValueError as ve:
             print(f"an error has occured: {ve}")
+
+    def undead_minions(self, minions, opponent):
+        print(f"You must now fight the Undead Minions of {self.name}")
+        while minions:
+            minion_index = randint(0, len(minions) - 1)
+            minions[minion_index].attack(opponent)
+            opponent.attack(minions[minion_index])
+            if minions[minion_index].health <= 0:
+                print(f"{minions[minion_index].name} was killed by {opponent.name}")
+                minions.pop(minion_index)
+            
+            if not minions:
+                print(f"\n{opponent.name} has defeated all of {self.name}'s {self._abilities["attack"]}")
+                break
+
+            if opponent.health <= 0:
+                print(f"\n{self.name}'s {self._abilities["attack"]} defeated {opponent.name}")
+                break
+
+
+    def special_attack(self, opponent):
+        print(f"The {self.name} has used called upon their 7 {self._abilities["attack"]}!!!")
+        minions = [Minion(name = f"Minion {x + 1}", health = randint(10, 15), attack_power = randint(1, 5), attack_name = "Bone Sword", evasion = None, sp_attack= None) for x in range(0,7)]
+        self.undead_minions(minions, opponent)
+
         
 
     def regenerate(self):
